@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}My orders — ShopEase{% endblock %}
+{% block content %}
+<section class="wrap page-section account-page"><div class="page-intro"><span class="eyebrow">YOUR SHOP EASE</span><h1>My orders<span class="heading-period">.</span></h1><p class="muted">Every good find, all in one place.</p></div>
+{% if orders %}<div class="orders-list">{% for order in orders %}<a class="order-card" href="{% url 'order_detail' order.pk %}"><div class="order-card-top"><div><span class="eyebrow">ORDER #{{ order.pk }}</span><h2>{{ order.created_at|date:'M j, Y' }}</h2></div><span class="status-pill status-{{ order.status|lower }}">{{ order.status }}</span></div><div class="order-card-bottom"><span>{{ order.items.count }} line item{{ order.items.count|pluralize }}</span><strong>{{ order.total_amount|inr }}</strong><span class="order-arrow">→</span></div></a>{% endfor %}</div>{% else %}<div class="empty-state account-empty"><span class="empty-symbol">↗</span><h2>Your order story starts here.</h2><p>Once you place an order, you’ll find its details and status on this page.</p><a class="button button-teal" href="{% url 'home' %}">Explore the shop</a></div>{% endif %}
+</section>
+{% endblock %}

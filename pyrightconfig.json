@@ -1,0 +1,8 @@
+{
+  "include": ["manage.py", "config", "users", "store", "orders"],
+  "exclude": [".venv", "staticfiles", "media"],
+  "venvPath": ".",
+  "venv": ".venv",
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "basic"
+}

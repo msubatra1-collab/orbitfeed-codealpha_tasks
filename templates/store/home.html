@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Shop thoughtful everyday finds — ShopEase{% endblock %}
+{% block content %}
+<section class="hero wrap">
+  <div class="hero-copy"><span class="eyebrow"><span class="eyebrow-dot"></span> A BETTER KIND OF EVERYDAY SHOP</span><h1>Good things.<br><em>No guesswork.</em></h1><p>Thoughtful picks for your home, your routine, and the bits in between. No fuss — just things worth keeping.</p><a class="button button-dark" href="#the-finds">Find your next favourite <span aria-hidden="true">→</span></a><div class="hero-proof"><span class="proof-mark">✓</span> Clear prices, considered picks, and a simple way to shop.</div></div>
+  <div class="hero-visual"><div class="hero-image-frame"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=88" alt="Warm, considered home details in a calm neutral room" fetchpriority="high"></div><div class="hero-note"><span class="note-mark">✳</span><span>Make room for<br><strong>the things you love.</strong></span></div><div class="hero-index">01 <span></span> EVERYDAY EDIT</div></div>
+</section>
+<section class="catalog-section wrap" id="the-finds">
+  <div class="section-heading"><div><span class="eyebrow">THE SHOP</span><h2>Find your good thing<span class="heading-period">.</span></h2><p class="muted">{{ result_count }} considered finds, ready to make your day a little easier.</p></div><span class="results-count">{{ result_count }} RESULTS</span></div>
+  <div class="catalog-layout">
+    <aside class="filter-rail" aria-label="Catalog filters">
+      <form action="{% url 'home' %}" method="get" class="filter-form">
+        {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+        <div class="filter-group"><label class="filter-title" for="category-filter">SHOP BY</label><select id="category-filter" name="category" onchange="this.form.submit()"><option value="">All finds</option>{% for category in categories %}<option value="{{ category.slug }}" {% if active_category == category.slug %}selected{% endif %}>{{ category.name }}</option>{% endfor %}</select></div>
+        <div class="filter-group"><label class="filter-title" for="sort-filter">SORT BY</label><select id="sort-filter" name="sort" onchange="this.form.submit()"><option value="newest" {% if sort == 'newest' %}selected{% endif %}>Latest finds</option><option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: low to high</option><option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: high to low</option></select></div>
+        <button type="submit" class="button button-outline filter-apply">Apply filters</button>
+        {% if query or active_category or sort != 'newest' %}<a class="clear-filters" href="{% url 'home' %}">Clear filters</a>{% endif %}
+      </form>
+      <div class="filter-promise"><span class="promise-icon">✳</span><p><strong>Chosen with care.</strong><br>Everyday pieces, picked to be useful, lovely, or both.</p></div>
+    </aside>
+    <div class="catalog-results">
+      {% if query %}<p class="search-note">Showing results for <strong>“{{ query }}”</strong></p>{% endif %}
+      {% if products %}<div class="product-grid">{% for product in products %}{% include 'store/_product_card.html' with product=product %}{% endfor %}</div>
+        {% if page_obj.has_other_pages %}<nav class="pagination" aria-label="Catalog pages">{% if page_obj.has_previous %}<a class="page-arrow" href="?q={{ query|urlencode }}&category={{ active_category|urlencode }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}" aria-label="Previous page">←</a>{% endif %}<span>PAGE <strong>{{ page_obj.number }}</strong> OF {{ page_obj.paginator.num_pages }}</span>{% if page_obj.has_next %}<a class="page-arrow" href="?q={{ query|urlencode }}&category={{ active_category|urlencode }}&sort={{ sort }}&page={{ page_obj.next_page_number }}" aria-label="Next page">→</a>{% endif %}</nav>{% endif %}
+      {% else %}<div class="empty-state"><span class="empty-symbol">⌕</span><h3>Nothing on this shelf just yet.</h3><p>Try a different search or clear the filters to see all our finds.</p><a class="button button-teal" href="{% url 'home' %}">See everything</a></div>{% endif %}
+    </div>
+  </div>
+</section>
+<section class="closing-strip"><div class="wrap closing-inner"><span class="closing-star">✳</span><p>Good finds, <em>without the fuss.</em></p><a href="#the-finds" aria-label="Back to the shop">↑</a></div></section>
+{% endblock %}

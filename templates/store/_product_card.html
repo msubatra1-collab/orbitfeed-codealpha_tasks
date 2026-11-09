@@ -1,0 +1,14 @@
+{% load static %}
+<article class="product-card">
+  <a class="product-image-wrap" href="{% url 'product_detail' product.slug %}">
+    <img class="product-image" src="{{ product.image }}" alt="{{ product.name }}" loading="lazy" width="700" height="850">
+    {% if product.stock < 5 and product.stock > 0 %}<span class="product-ribbon">Few left</span>{% endif %}
+  </a>
+  <div class="product-info">
+    <div class="product-meta"><a href="{% url 'home' %}?category={{ product.category.slug }}">{{ product.category.name }}</a><span>{% if product.in_stock %}In stock{% else %}Sold out{% endif %}</span></div>
+    <h3><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></h3>
+    <div class="product-bottom"><span class="price">{{ product.price|inr }}</span>
+      {% if product.in_stock %}<form action="{% url 'cart_add' product.pk %}" method="post" class="card-add-form">{% csrf_token %}<input type="hidden" name="quantity" value="1"><button class="add-icon" type="submit" aria-label="Add {{ product.name }} to bag">+</button></form>{% else %}<button class="add-icon disabled" type="button" disabled aria-label="{{ product.name }} is sold out">–</button>{% endif %}
+    </div>
+  </div>
+</article>

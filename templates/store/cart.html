@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Your bag — ShopEase{% endblock %}
+{% block content %}
+<section class="wrap page-section cart-page">
+  <div class="page-intro"><span class="eyebrow">YOUR LITTLE LINE-UP</span><h1>Your bag<span class="heading-period">.</span></h1><p class="muted">A good start. Take a look, make it yours.</p></div>
+  {% if lines %}
+  <div class="cart-layout">
+    <div class="cart-items">
+      <div class="cart-table-head"><span>ITEM</span><span>QUANTITY</span><span>SUBTOTAL</span></div>
+      {% for line in lines %}<article class="cart-line" data-unit-price="{{ line.product.price }}">
+        <a class="cart-thumb" href="{% url 'product_detail' line.product.slug %}"><img src="{{ line.product.image }}" alt="{{ line.product.name }}" width="180" height="180"></a>
+        <div class="cart-product-info"><a class="cart-product-name" href="{% url 'product_detail' line.product.slug %}">{{ line.product.name }}</a><span class="cart-product-category">{{ line.product.category.name }}</span><span class="cart-unit-price">{{ line.product.price|inr }} each</span></div>
+        <form class="cart-quantity-form" action="{% url 'cart_update' line.product.pk %}" method="post">{% csrf_token %}<div class="quantity-control quantity-compact"><button type="button" class="qty-step" data-step="-1" aria-label="Decrease {{ line.product.name }} quantity">−</button><label class="sr-only" for="quantity-{{ line.product.pk }}">Quantity for {{ line.product.name }}</label><input id="quantity-{{ line.product.pk }}" class="cart-quantity" type="number" min="1" max="{{ line.product.stock }}" name="quantity" value="{{ line.quantity }}" required><button type="button" class="qty-step" data-step="1" aria-label="Increase {{ line.product.name }} quantity">+</button></div><button type="submit" class="update-link">Update</button></form>
+        <div class="cart-line-end"><strong class="line-total">{{ line.line_total|inr }}</strong><form action="{% url 'cart_remove' line.product.pk %}" method="post">{% csrf_token %}<button class="remove-link" type="submit">Remove</button></form></div>
+      </article>{% endfor %}
+      <a href="{% url 'home' %}#the-finds" class="text-link continue-link">← Continue browsing</a>
+    </div>
+    <aside class="order-summary" data-cart-summary data-tax-rate="0.10"><span class="eyebrow">THE TOTAL, CLEARLY</span><h2>Order summary</h2><div class="summary-row"><span>Subtotal</span><strong data-subtotal>{{ subtotal|inr }}</strong></div><div class="summary-row"><span>Tax <small>(10%)</small></span><strong data-tax>{{ tax|inr }}</strong></div><div class="summary-total"><span>Total</span><strong data-total>{{ total|inr }}</strong></div><a class="button button-teal checkout-button" href="{% url 'checkout' %}">Continue to checkout <span aria-hidden="true">→</span></a><p class="summary-note">No payment is collected until your order is placed. Card is a demo option only.</p><div class="summary-foot"><span>✓</span> A simple checkout, with no surprises.</div></aside>
+  </div>
+  {% else %}<div class="empty-cart"><div class="empty-bag-icon">○</div><h2>Your bag is taking a breather.</h2><p>It’s empty for now. The good finds are one click away.</p><a class="button button-teal" href="{% url 'home' %}#the-finds">Explore the shop <span aria-hidden="true">→</span></a></div>{% endif %}
+</section>
+{% endblock %}
